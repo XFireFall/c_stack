@@ -1,5 +1,6 @@
 #include "stack.h"
 
+
 //==========__HASH__==================
 // Calculates current hash sum of the (items) array of the stack
 stack_val_type Stack_hash(const struct Stack* this)
@@ -60,7 +61,9 @@ void Stack_construct_with_name(struct Stack* this, const char* creating_function
 
     Stack_set_canary(this);
 
-    this->hash_sum = Stack_hash(this);
+    //this->hash_sum -= this->items[this->size];
+    //this->hash_sum = Stack_hash(this);
+    this->hash_sum = 0;
 
     this->using_state = RELEASE;
 
@@ -99,7 +102,7 @@ int Stack_push(struct Stack* this, stack_val_type new_item)
 
     this->items[this->size++] = new_item;
 
-    this->hash_sum = Stack_hash(this);
+    this->hash_sum -= ((this->size % 2 == 0) ? 1 : -1) * (this->size) * this->items[this->size - 1];
     ASSERT_OK();
 
     return OK;
@@ -123,7 +126,7 @@ int Stack_pop(struct Stack* this, stack_val_type* out_item)
 
     --this->size;
 
-    this->hash_sum = Stack_hash(this);
+    this->hash_sum -= ((this->size % 2 == 0) ? 1 : -1) * (this->size + 1) * this->items[this->size];
     ASSERT_OK();
 
     *out_item = this->items[this->size];
