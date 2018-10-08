@@ -6,10 +6,11 @@
 int Unittest_stack_massive_push(struct Stack* st, int num)
 {
     printf("pushing: target: %d; completed: \n", num);
-    int i = 0, printed = 0, del = num;
+    int i = 0, del = num;
+
     for(int sign = -1; i < num; ++i, sign = -sign)
     {
-        for(int j = 0; j < printed; ++j)
+        for(int i = 0; i < 100; i++) // summary length < 100
             printf("\b");
 
         if(Stack_push(st, i * sign) == ERROR)
@@ -18,15 +19,25 @@ int Unittest_stack_massive_push(struct Stack* st, int num)
             return i;
         }
 
-        if((i + 1) *+ 10 == del)
+        if((i + 1) * 20 == del)
         {
-            printed = printf(" %d%%", del * 10 / num);
+            printf(" (");
+            int j = 0;
+            for( ; j < del / num; ++j)
+                printf("[ ]");
+            for( ; j < 20; ++j)
+                printf(" . ");
+            printf(")");
+
+            if(i == num - 1)
+                printf(" [ "GREEN"done"RESET" ]\n");
+            else
+                printf(" [      ]");
+
             del += num;
         }
     }
-    for(int j = 0; j < printed; ++j)
-        printf("\b");
-    printf("[ "GREEN"done"RESET" ]\n");
+
     return i;
 }
 
@@ -35,10 +46,11 @@ int Unittest_stack_massive_push(struct Stack* st, int num)
 int Unittest_stack_massive_pop(struct Stack* st, int num)
 {
     printf("poping : target: %d; completed: \n", num);
-    int i = 0, printed = 0, del = num, a;
+    int i = 0, del = num, a = 0;
+
     for(int sign = -1; i < num; ++i, sign = -sign)
     {
-        for(int j = 0; j < printed; ++j)
+        for(int i = 0; i < 100; i++) // summary length < 100
             printf("\b");
 
         if(Stack_pop(st, &a) == ERROR)
@@ -47,15 +59,25 @@ int Unittest_stack_massive_pop(struct Stack* st, int num)
             return i;
         }
 
-        if((i + 1) * 10 == del)
+        if((i + 1) * 20 == del)
         {
-            printed = printf(" %d%%", del * 10 / num);
+            printf(" |");
+            int j = 0;
+            for( ; j < del / num; ++j)
+                printf("[ ]");
+            for( ; j < 20; ++j)
+                printf(" . ");
+            printf("|");
+
+            if(i == num - 1)
+                printf(" [ "GREEN"done"RESET" ]\n");
+            else
+                printf(" [      ]");
+
             del += num;
         }
     }
-    for(int j = 0; j < printed; ++j)
-        printf("\b");
-    printf("[ "GREEN"done"RESET" ]\n");
+
     return i;
 }
 
@@ -68,18 +90,16 @@ void stack_unit_testing(void)
     if(CHECK_MAXSIZE)
     { // max size testing
         printf("\nUNITTESTING==> MAX SIZE TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
-        UNITTEST(Unittest_stack_massive_push(&st, 10000), 10000);
-        UNITTEST(Unittest_stack_massive_pop (&st, 10000), 10000);
+        UNITTEST(Unittest_stack_massive_push(&st, 300), 300);
+        UNITTEST(Unittest_stack_massive_pop (&st, 99), 99);
     }
 
     if(CHECK_NEGATIVE_SIZE)
     { // size < 0
         printf("\nUNITTESTING==> SIZE TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         st.size = -1;
         UNITTEST(Stack_push(&st, 42), ERROR);
@@ -88,8 +108,7 @@ void stack_unit_testing(void)
     if(CHECK_NEGATIVE_CAPACITY)
     { // capacity < 0
         printf("\nUNITTESTING==> CAPACITY TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         st.capacity = -1;
         UNITTEST(Stack_push(&st, 42), ERROR);
@@ -98,8 +117,7 @@ void stack_unit_testing(void)
     if(CHECK_BAD_HASH)
     { // bad hash
         printf("\nUNITTESTING==> ITEM CHANGE TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         Stack_push(&st, 42);
         Stack_push(&st, 42);
@@ -113,8 +131,7 @@ void stack_unit_testing(void)
     if(CHECK_EXCHANGE_HASH)
     { // hash exchange
         printf("\nUNITTESTING==> ITEM EXCHANGE TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         Stack_push(&st, 42);
         Stack_push(&st, 42);
@@ -129,8 +146,7 @@ void stack_unit_testing(void)
     if(CHECK_CANARY)
     { // check bad canary
         printf("\nUNITTESTING==> CANARY TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         Stack_push(&st, 1);
         Stack_push(&st, 2);
@@ -142,8 +158,7 @@ void stack_unit_testing(void)
     if(CHECK_CANARY_2)
     { // check canary double change
         printf("\nUNITTESTING==> SYMMERTY CANARY TEST\n");
-        Stack_construct(st);
-        st.using_state = TESTING;
+        Unittest_stack_reconstruct(st);
 
         Stack_push(&st, 111);
         Stack_push(&st, 222);

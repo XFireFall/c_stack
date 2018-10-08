@@ -14,6 +14,7 @@
 #define CHECK_CANARY            (1)
 #define CHECK_CANARY_2          (1)
 
+#define Unittest_stack_reconstruct( var ) ({Stack_construct_with_name(&var, __FUNCTION__, #var); st.using_state = TESTING;})
 #define UNITTEST( condition, reference ) \
     { \
         int tmp_cond = condition; \
